@@ -1,5 +1,5 @@
-run: dm.bf
-	python bf.py dm.bf
+run: demo.bf
+	python bf.py demo.bf
 
 %.bf: %.asm asm.py
 	python asm.py < $< > $@
