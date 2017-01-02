@@ -1,8 +1,11 @@
 run: dm.bf
 	python bf.py dm.bf
 
-dm.bf: dm.asm asm.py
+%.bf: %.asm asm.py
 	python asm.py < $< > $@
 
-dm.asm: dm.lisp lisp.py
+%.asm: %.lisp lisp.py
 	python lisp.py < $< > $@
+
+clean:
+	rm -f *.pyc *.asm *.bf
