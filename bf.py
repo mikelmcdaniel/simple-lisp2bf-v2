@@ -20,7 +20,7 @@ def eval_bf(bf_str, in_file=stdin, out_file=stdout, stack=None, index=0, bf_inde
   j = bf_index
   while j < len(bf_str):
     c = bf_str[j]
-    #print '%s\t%s\t%s' % (j, repr(bf_str[j-3:j+4]), stack[:10])
+    # print(f'{j}\t{bf_str[j-3:j+4]!r}\t{stack[:10]}')
     if c == '>':
       index += 1
     elif c == '<':
@@ -31,6 +31,7 @@ def eval_bf(bf_str, in_file=stdin, out_file=stdout, stack=None, index=0, bf_inde
       stack[index] = (stack[index] - 1) % MAX_CELL_VALUE
     elif c == '.':
       out_file.write(chr(stack[index]))
+      out_file.flush()
     elif c == ',':
       stack[index] = ord(in_file.read(1)) % MAX_CELL_VALUE
     elif c == ']':
@@ -43,8 +44,8 @@ def eval_bf(bf_str, in_file=stdin, out_file=stdout, stack=None, index=0, bf_inde
   return index
 
 def main(argv):
-  in_file = open(argv[1]) if len(argv) > 1 else stdin
-  out_file = open(argv[2]) if len(argv) > 2 else stdout
+  in_file = open(argv[1], 'r') if len(argv) > 1 else stdin
+  out_file = open(argv[2], 'w') if len(argv) > 2 else stdout
   eval_bf(in_file.read(), stdin, out_file)
 
 if __name__ == '__main__':

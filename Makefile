@@ -1,11 +1,14 @@
 run: demo.bf
-	python bf.py demo.bf
+	python3 bf.py demo.bf
+
+test: *.py
+	python3 test.py
 
 %.bf: %.asm asm.py
-	python asm.py < $< > $@
+	python3 asm.py < $< > $@
 
 %.asm: %.lisp lisp.py
-	python lisp.py < $< > $@
+	python3 lisp.py < $< > $@
 
 clean:
 	rm -f *.pyc *.asm *.bf

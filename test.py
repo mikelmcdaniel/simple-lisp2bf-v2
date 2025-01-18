@@ -14,19 +14,19 @@ def test_asm(asm_line, func, safe_inputs=None):
   stack = [0] * 10
   end_stack = [0] * 10
   bf_line = asm.asm_line_to_bf(asm.normalized_asm_line(asm_line))
-  nums = range(256)
+  nums = list(range(256))
   for a in sample(nums, 5):
     for b in sample(nums, 5):
       if not safe_inputs(a, b):
         continue
-      print asm_line, a, b
+      print(asm_line, a, b)
       stack[0] = a
       stack[1] = b
       results = func(a, b)
       if not isinstance(results, tuple):
         results = (results,)
       end_stack[:len(results)] = [x % 256 for x in results]
-      for j in xrange(2, len(stack)):
+      for j in range(2, len(stack)):
         stack[j] = 0
       test_bf_line(bf_line, stack, 2, end_stack, len(results))
 
