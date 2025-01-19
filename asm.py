@@ -1,12 +1,12 @@
 from sys import stdin, stdout, argv
 
-def normalized_asm_line(asm_line):
+def normalized_asm_line(asm_line: str) -> list[str]:
   if '#' in asm_line:
     asm_line = asm_line[:asm_line.index('#')]
   return asm_line.split()
 
-def normalized_asm_lines(asm_lines):
-  asm_lines = list(filter(bool, map(normalized_asm_line, asm_lines.split('\n'))))
+def normalized_asm_lines(original_asm_lines: str) -> list[list[str]]:
+  asm_lines: list[list[str]] = list(filter(bool, map(normalized_asm_line, original_asm_lines.split('\n'))))
 
   label_dict = {'start': '1'}
   for asm_line in asm_lines:
@@ -27,7 +27,7 @@ def normalized_asm_lines(asm_lines):
   return asm_lines
 
 
-def asm_line_to_bf(asm_line):
+def asm_line_to_bf(asm_line: list[str]) -> str:
   inst = asm_line[0]
   if inst == 'jump':
     if len(asm_line) > 1:
@@ -50,7 +50,7 @@ def asm_line_to_bf(asm_line):
   elif inst == 'less':
     return f'{asm_line_to_bf(["greatereq"])} {asm_line_to_bf(["not"])}'
   elif inst == 'greatereq':
-    return f'{asm_line_to_bf(["copy", -2])} {asm_line_to_bf(["pop", -3])} {asm_line_to_bf(["lesseq"])}'
+    return f'{asm_line_to_bf(["copy", "-2"])} {asm_line_to_bf(["pop", "-3"])} {asm_line_to_bf(["lesseq"])}'
   elif inst == 'sub':
     return '<[-<->]'
   elif inst == 'not':
@@ -75,7 +75,7 @@ def asm_line_to_bf(asm_line):
   elif inst == 'div':
     return f'{asm_line_to_bf(["divmod"])} {asm_line_to_bf(["pop"])}'
   elif inst == 'mod':
-    return f'{asm_line_to_bf(["divmod"])} {asm_line_to_bf(["pop", -2])}'
+    return f'{asm_line_to_bf(["divmod"])} {asm_line_to_bf(["pop", "-2"])}'
   elif inst == 'read':
     read_num = int(asm_line[1]) if len(asm_line) > 1 else 1
     assert read_num >= 0
@@ -122,7 +122,7 @@ def asm_line_to_bf(asm_line):
 
   raise Exception(f'Bad instruction: {asm_line!r}')
 
-def asm_to_bf(asm_string):
+def asm_to_bf(asm_string: str) -> str:
   asm_lines = normalized_asm_lines(asm_string)
 
   output = ['>+[>']
@@ -132,7 +132,7 @@ def asm_to_bf(asm_string):
 
   return '\n'.join(output)
 
-def main(argv):
+def main(argv: list[str]) -> None:
   in_file = open(argv[1], 'r') if len(argv) > 1 else stdin
   out_file = open(argv[2], 'w') if len(argv) > 2 else stdout
   out_file.write(asm_to_bf(in_file.read()))

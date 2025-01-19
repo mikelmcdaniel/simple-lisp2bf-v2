@@ -1,53 +1,52 @@
 import itertools
 from sys import stdin, stdout, argv
+from typing import Optional, Iterator, Union, Any
 
-class VarStack(object):
-  def __init__(self, stacks=None):
+
+class CompilerException(Exception):
+  pass
+
+class VarStack:
+  def __init__(self, stacks: list[list[Optional[str]]]=None):
     if stacks is None:
       stacks = []
-    self.stacks = stacks
+    self.stacks: list[list[Optional[str]]] = stacks
     self.push_stack()
 
-  def push_stack(self):
+  def push_stack(self) -> None:
     self.stacks.append([])
 
-  def pop_stack(self):
+  def pop_stack(self) -> None:
     self.stacks.pop()
 
-  def push(self, name=None):
-    if isinstance(name, int):
-      self.stacks[-1].append(None)
-    else:
+  def push(self, name: Optional[str]=None) -> None:
       self.stacks[-1].append(name)
 
-  def pop(self, name=None):
-    if name is None:
+  def pop(self, index: Optional[int]=None) -> None:
+    if index is None:
       self.stacks[-1].pop()
-    elif isinstance(name, int):
-      del self.stacks[-1][name]
     else:
-      index = self.stacks[-1].index(name)
       del self.stacks[-1][index]
 
-  def get_rel_pos(self, name):
+  def get_rel_pos(self, name: str) -> int:
     offset = 0
-    for j in range(len(self.stacks) - 1, -1, -1):
-      for k in range(len(self.stacks[j]) - 1, -1, -1):
+    for stack in reversed(self.stacks):
+      for variable in reversed(stack):
         offset -= 1
-        if self.stacks[j][k] == name:
+        if variable == name:
           return offset
-    raise Exception(f'{self}.get_pos({name!r}) failed')
+    raise CompilerException(f'{self}.get_pos({name!r}) failed')
 
-  def __contains__(self, name):
+  def __contains__(self, name: str) -> bool:
     return any(name in stack for stack in reversed(self.stacks))
 
-  def __str__(self):
+  def __str__(self) -> str:
     return repr(self)
 
-  def __repr__(self):
+  def __repr__(self) -> str:
     return f'VarStack({self.stacks!r})'
 
-def lisp_tokens(lisp_str):
+def lisp_tokens(lisp_str: str) -> Iterator[str]:
   start = 0
   j = 0
   while j < len(lisp_str):
@@ -66,7 +65,6 @@ def lisp_tokens(lisp_str):
       j += 1
       while lisp_str[j] not in '"':
         j += 1
-      #j += 1
       yield lisp_str[start:j + 1]
       start = j + 1
     elif c == ';':
@@ -75,8 +73,8 @@ def lisp_tokens(lisp_str):
       start = j + 1
     j += 1
 
-def lisp_to_lists(lisp_str):
-  stack = [[]]
+def lisp_to_lists(lisp_str: str) -> list[Any]:
+  stack: list[list[Any]] = [[]]
   for token in lisp_tokens(lisp_str):
     if token == '(':
       stack.append([])
@@ -90,13 +88,12 @@ def lisp_to_lists(lisp_str):
       stack[-1].append(token)
   return stack[0]
 
-def lisp_form_to_asm_lines(lisp, var_stack=None, label_generator=None):
+def lisp_form_to_asm_lines(lisp, var_stack: Optional[VarStack]=None, label_generator: Iterator[str]=None) -> list[str]:
   if var_stack is None:
     var_stack = VarStack()
   if label_generator is None:
-    label_generator = iter(f'LABEL_{j}' for j in itertools.count())
+    label_generator = iter(f'$LABEL_{j}' for j in itertools.count())
   output = []
-  # TODO: think about stacks and scopes and life and stuff
   for form in lisp:
     if isinstance(form, list):
       op = form[0]
@@ -181,13 +178,13 @@ def lisp_form_to_asm_lines(lisp, var_stack=None, label_generator=None):
         var_stack.push()
       elif op == 'not':
         assert len(form) == 2
-        output.append(lisp_form_to_asm_lines(form[1], var_stack, label_generator))
+        output.extend(lisp_form_to_asm_lines(form[1], var_stack, label_generator))
         output.append('not')
         var_stack.pop()
         var_stack.push()
       elif op == 'bool':
         assert len(form) == 2
-        output.append(lisp_form_to_asm_lines(form[1], var_stack, label_generator))
+        output.extend(lisp_form_to_asm_lines(form[1], var_stack, label_generator))
         output.append('bool')
         var_stack.pop()
         var_stack.push()
@@ -230,7 +227,7 @@ def lisp_form_to_asm_lines(lisp, var_stack=None, label_generator=None):
           output.append('pop -2')
           var_stack.pop(-2)
         output.append('copy -2')
-        var_stack.push(-2)
+        var_stack.push()
         output.append('pop -3')
         var_stack.pop(-3)
         output.append('jump')
@@ -296,7 +293,7 @@ def lisp_form_to_asm_lines(lisp, var_stack=None, label_generator=None):
         assert isinstance(form[1], str)
         output.extend(lisp_form_to_asm_lines([form[2]], var_stack, label_generator))
         output.append('copy')
-        var_stack.push(-1)
+        var_stack.push()
         var_rel_pos = var_stack.get_rel_pos(form[1])
         output.append(f'set {var_rel_pos}')
         var_stack.pop()
@@ -318,7 +315,7 @@ def lisp_form_to_asm_lines(lisp, var_stack=None, label_generator=None):
         for _ in range(len(form[1]) - 1):
           output.append('pop')
           var_stack.pop()
-      else: # op is a function call (not necessarily a func name)
+      else: # op is a function call (not necessarily a func index)
         var_stack.push_stack()
         return_label = next(label_generator)
         output.append(f'push {return_label}')
@@ -326,27 +323,26 @@ def lisp_form_to_asm_lines(lisp, var_stack=None, label_generator=None):
         output.extend(lisp_form_to_asm_lines(form, var_stack, label_generator))
         len_form = len(form)
         output.append(f'copy {-len_form}')
-        var_stack.push(-len_form)
+        var_stack.push()
         output.append(f'pop {-(len_form + 1)}')
-        var_stack.push(-len_form - 1)
+        var_stack.push()
         output.append('jump')
-        var_stack.pop() # TODO check the number of pushs/pops here
+        var_stack.pop()
         output.append(f'{return_label}:')
         var_stack.pop_stack()
         var_stack.push()
     elif isinstance(form, str):
       if len(form) >= 3 and form[0] == "'" and form[-1] == "'":
-        # TODO: I shouldn't need these replace calls here...
-        form = form.replace('\\n', '\n').replace('\\t', '\t')
+        form = form.replace(r'\n', '\n').replace(r'\t', '\t')
         assert len(form) == 3
         for c in form[1:-1]:
           ascii_val = ord(c)
           output.append(f'push {ascii_val}')
-          var_stack.push(str(ascii_val))
+          var_stack.push()
       elif form in var_stack:
         rel_pos = var_stack.get_rel_pos(form)
         output.append(f'copy {rel_pos}')
-        var_stack.push(rel_pos)
+        var_stack.push()
       else:
         output.append(f'push {form}')
         var_stack.push(form)
@@ -354,11 +350,11 @@ def lisp_form_to_asm_lines(lisp, var_stack=None, label_generator=None):
       raise Exception(f'Bad lisp form {form!r}')
   return output
 
-def lisp_to_asm(lisp_str):
+def lisp_to_asm(lisp_str: str) -> str:
   lisp = lisp_to_lists(lisp_str)
   return '\n'.join(lisp_form_to_asm_lines(lisp))
 
-def main(argv):
+def main(argv: list[str]) -> None:
   in_file = open(argv[1]) if len(argv) > 1 else stdin
   out_file = open(argv[2]) if len(argv) > 2 else stdout
   out_file.write(lisp_to_asm(in_file.read()))

@@ -2,7 +2,7 @@ from sys import stdin, stdout, argv
 
 MAX_CELL_VALUE = 256
 
-def matching_brace_dict(bf_str):
+def matching_brace_dict(bf_str: str) -> dict[int, int]:
   matching_brace = {}
   brace_poss = []
   for j, c in enumerate(bf_str):
@@ -13,7 +13,7 @@ def matching_brace_dict(bf_str):
       matching_brace[brace_poss.pop()] = j
   return matching_brace
 
-def eval_bf(bf_str, in_file=stdin, out_file=stdout, stack=None, index=0, bf_index=0):
+def eval_bf(bf_str: str, in_file=stdin, out_file=stdout, stack=None, index=0, bf_index=0) -> int:
   if stack is None:
     stack = [0] * 3000000
   matching_braces = matching_brace_dict(bf_str)
@@ -43,7 +43,7 @@ def eval_bf(bf_str, in_file=stdin, out_file=stdout, stack=None, index=0, bf_inde
     j += 1
   return index
 
-def main(argv):
+def main(argv: list[str]) -> None:
   in_file = open(argv[1], 'r') if len(argv) > 1 else stdin
   out_file = open(argv[2], 'w') if len(argv) > 2 else stdout
   eval_bf(in_file.read(), stdin, out_file)
