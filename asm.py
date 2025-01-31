@@ -50,13 +50,13 @@ def asm_line_to_bf(asm_line: list[str]) -> str:
   elif inst == 'less':
     return f'{asm_line_to_bf(["greatereq"])} {asm_line_to_bf(["not"])}'
   elif inst == 'greatereq':
-    return f'{asm_line_to_bf(["copy", "-2"])} {asm_line_to_bf(["pop", "-3"])} {asm_line_to_bf(["lesseq"])}'
+    return '<<[->-[->>+>+<<<]>>>[-<<<+>>>]+<[->-<[-]]>[-<+>]<[<+<<[-]>>>-]<<<]>[-]>[-<<+>>]<'
   elif inst == 'sub':
     return '<[-<->]'
   elif inst == 'not':
-    return '+<[->-<[-]]>[-<+>]'
+    return '+<[>-<[-]]>[-<+>]'
   elif inst == 'bool':
-    return '<[->+<[-]]>[-<+>]'
+    return '<[>+<[-]]>[-<+>]'
   elif inst == 'copy':
     copy_num = -1 if len(asm_line) < 2 else int(asm_line[1])
     copy_num = -copy_num
@@ -68,6 +68,8 @@ def asm_line_to_bf(asm_line: list[str]) -> str:
     return '<[-<+>]'
   elif inst == 'mul':
     return '<<[->>+<<]>>[-<[-<+>>>+<<]>>[-<<+>>]<]<[-]'
+  elif inst == 'exp':
+    return '<<[->>+<<]+>[-<[->>>+<<<]>>>[-<[-<<+>>>>+<<]>>[-<<+>>]<]<<]>[-]<'
   elif inst == 'divmod':
     return '<[->>+>+<<<]>>>[-<<<+>>>]<<<<[->-[->>>>+<<<<]>>>>' + \
       '[-<+<<<+>>>>]+<[->-<[-]]>[-<+>]<[-<<+ >[->+<]>[-<+<<+>>>]]' + \

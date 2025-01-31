@@ -119,6 +119,13 @@ def lisp_form_to_asm_lines(lisp, var_stack: Optional[VarStack]=None, label_gener
         for _ in range(len(form) - 1):
           var_stack.pop()
         var_stack.push()
+      elif op == '**':
+        assert len(form) >= 3
+        output.extend(lisp_form_to_asm_lines(form[1:], var_stack, label_generator))
+        output.extend('exp' for j in range(len(form) - 2))
+        for _ in range(len(form) - 1):
+          var_stack.pop()
+        var_stack.push()
       elif op == '/':
         assert len(form) == 3
         output.extend(lisp_form_to_asm_lines(form[1:], var_stack, label_generator))

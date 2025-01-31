@@ -39,5 +39,29 @@
     (write "Enter last: ")
     (setq last (read_num))
     (write "\n")
+
+    (print_num start)
+    (write " ** ")
+    (print_num last)
+    (write " % 256 == ")
+    (print_num (** start last))
+    (write "\n")
+
+    (print_num start)
+    (write "^3 % 256 == ")
+    (print_num (cube start))
+    (write "\n")
+
+    (print_num start)
+    (write "! % 256 == ")
+    (print_num (factorial start))
+    (write "\n")
+
+
+    (write "Here are the primes from ")
+    (print_num start)
+    (write " to ")
+    (print_num last)
+    (write ":\n")
     (print_primes start last))
   (exit))
