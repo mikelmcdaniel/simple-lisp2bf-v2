@@ -104,13 +104,9 @@ def asm_line_to_bf(asm_line: list[str]) -> str:
     ))
   elif inst == 'cond':
     return ' '.join((
-      asm_line_to_bf(['bool']),
       asm_line_to_bf(['push', asm_line[1]]),
       asm_line_to_bf(['push', asm_line[2]]),
-      asm_line_to_bf(['sub']),
-      asm_line_to_bf(['mul']),
-      asm_line_to_bf(['push', asm_line[2]]),
-      asm_line_to_bf(['add'])
+      '<[-<->>+<]>[-<->]<<<[>[->-<]<[-]]>>[-<<->>]<[-]'
     ))
   elif inst == 'exit':
     return '>]' # push 0; jump
