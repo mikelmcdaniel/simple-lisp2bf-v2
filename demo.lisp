@@ -48,7 +48,7 @@
     (write "\n")
 
     (print_num start)
-    (write "^3 % 256 == ")
+    (write " ** 3 % 256 == ")
     (print_num (cube start))
     (write "\n")
 
@@ -57,6 +57,11 @@
     (print_num (factorial start))
     (write "\n")
 
+    (write "log2(")
+    (print_num last)
+    (write ") == ")
+    (print_num (log2 last))
+    (write "\n")
 
     (write "Here are the primes from ")
     (print_num start)

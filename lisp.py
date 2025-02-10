@@ -183,16 +183,10 @@ def lisp_form_to_asm_lines(lisp, var_stack: Optional[VarStack]=None, label_gener
         var_stack.pop()
         var_stack.pop()
         var_stack.push()
-      elif op == 'not':
+      elif op in ('not', 'bool', 'log2', 'div2'):
         assert len(form) == 2
-        output.extend(lisp_form_to_asm_lines(form[1], var_stack, label_generator))
-        output.append('not')
-        var_stack.pop()
-        var_stack.push()
-      elif op == 'bool':
-        assert len(form) == 2
-        output.extend(lisp_form_to_asm_lines(form[1], var_stack, label_generator))
-        output.append('bool')
+        output.extend(lisp_form_to_asm_lines([form[1]], var_stack, label_generator))
+        output.append(op)
         var_stack.pop()
         var_stack.push()
       elif op == 'read':

@@ -43,12 +43,11 @@ def asm_line_to_bf(asm_line: list[str]) -> str:
   elif inst == 'eq':
     return f'{asm_line_to_bf(["sub"])} {asm_line_to_bf(["not"])}'
   elif inst == 'lesseq':
-    return '<[-<-[->>>+>+<<<<]>>>>[-<<<<+>>>>]+<[->-<[-]]>[-<+>]' + \
-      '<[<+<[-]>>-]<<]<[-]>>[-<<+>>]<'
+    return '<[-<[>>+<<[->>-<<]]>>[-<<->>]<]>+<+>[-<<[->>-<<]>[-<+>]>]<'
   elif inst == 'greater':
     return f'{asm_line_to_bf(["lesseq"])} {asm_line_to_bf(["not"])}'
   elif inst == 'less':
-    return f'{asm_line_to_bf(["greatereq"])} {asm_line_to_bf(["not"])}'
+    return '<<[->>[-<+>]<[>-<[->+<]]<]-[->[->+<]<]>>[<<+>>[-]]<'
   elif inst == 'greatereq':
     return '<<[->-[->>+>+<<<]>>>[-<<<+>>>]+<[->-<[-]]>[-<+>]<[<+<<[-]>>>-]<<<]>[-]>[-<<+>>]<'
   elif inst == 'sub':
@@ -78,6 +77,10 @@ def asm_line_to_bf(asm_line: list[str]) -> str:
     return f'{asm_line_to_bf(["divmod"])} {asm_line_to_bf(["pop"])}'
   elif inst == 'mod':
     return f'{asm_line_to_bf(["divmod"])} {asm_line_to_bf(["pop", "-2"])}'
+  elif inst == 'div2':
+    return '<[>-<---[>-<[->-<]]]>[+<+>[+[->-<]]>[-<->]<]'
+  elif inst == 'log2':
+    return '<[->+<]->[[>-<---[>-<[->-<]]]>[+<+>[+[->-<]]>[-<->]<]<<+>]'
   elif inst == 'read':
     read_num = int(asm_line[1]) if len(asm_line) > 1 else 1
     assert read_num >= 0
