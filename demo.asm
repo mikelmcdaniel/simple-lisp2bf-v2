@@ -232,16 +232,16 @@ push 0
 push 0
 read
 copy
-set -3
+set -4
 pop
 push 0
 copy
-set -4
+set -3
 pop
 push 0
 push $LABEL_29
 push is_digit
-copy -4
+copy -5
 copy -2
 pop -3
 jump
@@ -250,22 +250,22 @@ cond $LABEL_27 $LABEL_28
 jump
 $LABEL_27:
 pop
-copy -2
+copy -1
 push 10
 mul
-copy -2
+copy -3
 push 48
 sub
 add
 copy
-set -4
+set -3
 pop
 read
 copy
-set -3
+set -4
 push $LABEL_30
 push is_digit
-copy -4
+copy -5
 copy -2
 pop -3
 jump
@@ -274,7 +274,7 @@ cond $LABEL_27 $LABEL_28
 jump
 $LABEL_28:
 pop
-copy -2
+copy -1
 set -3
 pop
 copy -2
@@ -317,7 +317,7 @@ pop -2
 jump
 $LABEL_31:
 copy
-set -4
+set -3
 pop
 push 69
 push 110
@@ -351,14 +351,14 @@ pop -2
 jump
 $LABEL_32:
 copy
-set -3
+set -4
 pop
 push 10
 write 1
 pop
 push $LABEL_33
 push print_num
-copy -4
+copy -3
 copy -2
 pop -3
 jump
@@ -375,7 +375,7 @@ pop
 pop
 push $LABEL_34
 push print_num
-copy -3
+copy -4
 copy -2
 pop -3
 jump
@@ -404,8 +404,8 @@ pop
 pop
 push $LABEL_35
 push print_num
-copy -4
-copy -4
+copy -3
+copy -5
 exp
 copy -2
 pop -3
@@ -417,7 +417,7 @@ write 1
 pop
 push $LABEL_36
 push print_num
-copy -4
+copy -3
 copy -2
 pop -3
 jump
@@ -458,7 +458,7 @@ push $LABEL_37
 push print_num
 push $LABEL_38
 push cube
-copy -6
+copy -5
 copy -2
 pop -3
 jump
@@ -473,7 +473,7 @@ write 1
 pop
 push $LABEL_39
 push print_num
-copy -4
+copy -3
 copy -2
 pop -3
 jump
@@ -506,7 +506,7 @@ push $LABEL_40
 push print_num
 push $LABEL_41
 push factorial
-copy -6
+copy -5
 copy -2
 pop -3
 jump
@@ -532,7 +532,7 @@ pop
 pop
 push $LABEL_42
 push print_num
-copy -3
+copy -4
 copy -2
 pop -3
 jump
@@ -551,7 +551,7 @@ pop
 pop
 push $LABEL_43
 push print_num
-copy -3
+copy -4
 log2
 copy -2
 pop -3
@@ -614,7 +614,7 @@ pop
 pop
 push $LABEL_44
 push print_num
-copy -4
+copy -3
 copy -2
 pop -3
 jump
@@ -631,7 +631,7 @@ pop
 pop
 push $LABEL_45
 push print_num
-copy -3
+copy -4
 copy -2
 pop -3
 jump
@@ -644,8 +644,8 @@ set -2
 pop
 push $LABEL_46
 push print_primes
-copy -4
-copy -4
+copy -3
+copy -5
 copy -3
 pop -4
 jump

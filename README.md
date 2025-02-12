@@ -22,7 +22,7 @@ It was fun to write.
 
 # How?
 
-```commandline
+```shell
 python3 py.py < py.lisp > demo.lisp  # converts the simple python-like language to a simple lisp language
 python3 lisp.py < demo.lisp > demo.asm  # converts the simple lisp language to a simple stack based assembly language
 python3 asm.py < demo.asm > demo.bf  # converts the stack based assembly language to Brain F*ck

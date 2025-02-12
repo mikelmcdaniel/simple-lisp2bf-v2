@@ -37,7 +37,7 @@
   (* (bool (<= '0' c)) (bool (<= c '9'))))
 
 (defun read_num ()
-  (let ((result 0) (c 0))
+  (let ((c 0) (result 0))
     (setq c (read))
     (setq result 0)
     (loop while (is_digit c) do
@@ -46,7 +46,7 @@
     result))
 
 (defun start ()
-  (let ((start 0) (last 0))
+  (let ((last 0) (start 0))
     (write "Enter start: ")
     (setq start (read_num))
     (write "Enter last: ")
