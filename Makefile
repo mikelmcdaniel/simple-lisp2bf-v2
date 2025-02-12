@@ -10,5 +10,8 @@ test: *.py
 %.asm: %.lisp lisp.py
 	python3 lisp.py < $< > $@
 
+%.lisp: %.py py.py
+	python3 py.py < $< > $@
+
 clean:
-	rm -f *.pyc *.asm *.bf
+	rm -f *.pyc *.asm *.bf *.lisp

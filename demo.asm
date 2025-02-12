@@ -1,5 +1,9 @@
 is_prime:
+push 0
 push 2
+copy
+set -3
+pop
 push 0
 copy -3
 copy -3
@@ -210,12 +214,14 @@ copy -2
 pop -3
 jump
 is_digit:
-copy -1
 push 48
-greatereq
+copy -2
+lesseq
+bool
 copy -2
 push 57
 lesseq
+bool
 mul
 pop -2
 copy -2
@@ -224,12 +230,18 @@ jump
 read_num:
 push 0
 push 0
+read
+copy
+set -3
+pop
+push 0
+copy
+set -4
+pop
 push 0
 push $LABEL_29
 push is_digit
-read
-copy
-set -7
+copy -4
 copy -2
 pop -3
 jump
@@ -238,20 +250,22 @@ cond $LABEL_27 $LABEL_28
 jump
 $LABEL_27:
 pop
-copy -1
+copy -2
 push 10
 mul
-copy -3
+copy -2
 push 48
 sub
 add
 copy
+set -4
+pop
+read
+copy
 set -3
 push $LABEL_30
 push is_digit
-read
-copy
-set -7
+copy -4
 copy -2
 pop -3
 jump
@@ -259,6 +273,8 @@ $LABEL_30:
 cond $LABEL_27 $LABEL_28
 jump
 $LABEL_28:
+pop
+copy -2
 set -3
 pop
 copy -2
@@ -634,11 +650,11 @@ copy -3
 pop -4
 jump
 $LABEL_46:
-set -3
-pop
 pop
 exit
 $LABEL_47:
+set -3
+pop
 copy -2
 pop -3
 jump
