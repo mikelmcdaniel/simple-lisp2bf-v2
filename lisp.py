@@ -60,11 +60,15 @@ def lisp_tokens(lisp_str: str) -> Iterator[str]:
       if start != j:
         yield lisp_str[start:j]
       start = j + 1
-    elif c in '"' and start == j:
+    elif c in ('"', "'") and start == j:
       start = j
       j += 1
-      while lisp_str[j] not in '"':
-        j += 1
+      quote_char = c
+      while lisp_str[j] != quote_char:
+        if lisp_str[j] == '\\':
+          j+= 2
+        else:
+          j += 1
       yield lisp_str[start:j + 1]
       start = j + 1
     elif c == ';':
@@ -72,6 +76,11 @@ def lisp_tokens(lisp_str: str) -> Iterator[str]:
         j += 1
       start = j + 1
     j += 1
+
+def unescaped_str(string: str) -> str:
+  for old, new in ((r'\n', '\n'), (r'\t', '\t'), ("\\'", "'"), (r'\"', '"'), (r'\\', '\\')):
+    string = string.replace(old, new)
+  return string
 
 def lisp_to_lists(lisp_str: str) -> list[Any]:
   stack: list[list[Any]] = [[]]
@@ -82,7 +91,7 @@ def lisp_to_lists(lisp_str: str) -> list[Any]:
       last_str = stack.pop()
       stack[-1].append(last_str)
     elif token[0] == '"' and token[-1] == '"':
-      for c in token[1:-1].replace('\\n', '\n').replace('\\t', '\t'):
+      for c in unescaped_str(token[1:-1]):
         stack[-1].append(f"'{c}'")
     else:
       stack[-1].append(token)
